@@ -1,0 +1,8 @@
+blacklist-milter
+================
+
+Blacklist-milter is a milter (i.e. a sendmail filter/plug-in) which blocks
+connections from remote sites that are spamming us by raising the firewall.
+The remote sites are blocked for a configurable amount of time.
+
+For support e-mail me at njh@bandsman.co.uk.
