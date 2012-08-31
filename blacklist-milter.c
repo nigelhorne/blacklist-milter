@@ -17,13 +17,13 @@
  *  MA 02110-1301, USA.
  *
  * This program is a milter (i.e. a sendmail filter/plug-in) which blocks
- * connections from remote sites that are spamming us. The remote sites are
- * blocked for a configurable time.
+ * connections from remote sites that are spamming us by raising the firewall.
+ * The remote sites are blocked for a configurable amount of time.
  *
  * cc $CFLAGS blacklist-milter.c -lmilter -lpthread
  *	add -L/usr/lib/libmilter on Debian
  *
- * Before installing check the routine isWhiteList
+ * Before installing check the routine isWhiteList, and the table localNets
  *
  * INPUT_MAIL_FILTER(`blacklist', `S=local:/var/run/blacklist, F=T, T=S:4m;R:4m')dnl
  * rm -f /var/run/blacklist
