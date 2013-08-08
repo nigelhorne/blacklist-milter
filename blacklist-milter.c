@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2006-2012 Nigel Horne <njh@bandsman.co.uk>
+ *  Copyright (C) 2006-2013 Nigel Horne <njh@bandsman.co.uk>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,7 +36,6 @@
  *	recipient' at the RCPT TO stage so that the spammer thinks the email
  *	isn't valid and may consider removing it (wishful thinking :-) )
  * TODO:	IPv6
- * TODO:	The location of the maillog should be configurable
  * TODO:	When stopping re-open firewall entries we've stopped
  *
  * Version 0.02: 27/1/07:
@@ -61,6 +60,8 @@
  *	Added DEBUG mode
  *	Make sure don't put up firewall against whitelisted addresses
  *	Block those in SpamCop's black-list
+ * Version 0.09 8/8/13
+ *	Allow the maillog's location to be given as an argument
  */
 #include <stdio.h>
 #include <sysexits.h>
@@ -82,7 +83,7 @@
 /*#define	TAIL_RESTART	120*60*/
 /*#define	NOBODY	65534*/	/* Can't do this so that we can run iptables */
 
-#define	MAIL_LOG	"/var/log/mail.log"
+#define	DEFAULT_MAIL_LOG	"/var/log/mail.log"
 
 #define	uint32_t	unsigned long
 
@@ -135,7 +136,7 @@ static	sfsistat	blacklist_cleanup(SMFICTX *ctx);
 static	int	isLocalAddr(in_addr_t ip);
 static	int	isWhiteList(const char *addr);
 static	void	*watchdog(void *a);
-static	void	tail(void);
+static	void	tail(const char *mail_log);
 static	char	*cli_strtok(const char *line, int fieldno, const char *delim);
 static	void	timeout(void);
 static	void	thread_sleep(int seconds);
@@ -144,7 +145,10 @@ static	int	rememberIP(SMFICTX *ctx, const char *addr);
 int
 main(int argc, char **argv)
 {
+	const char *progname = argv[0];
 	const char *port;
+	const char *mail_log = DEFAULT_MAIL_LOG;
+	int c;
 	pthread_t tid;
 	struct smfiDesc smfilter = {
 		"blacklist", /* filter name */
@@ -171,9 +175,24 @@ main(int argc, char **argv)
 #endif
 	};
 
-	if(argc != 2) {
-		fprintf(stderr, "Usage: %s socket-addr\n", argv[0]);
+	while((c = getopt(argc, argv, "f:")) != EOF)
+		switch(c) {
+			case 'f':
+				mail_log = optarg;
+				break;
+			default:
+				fprintf(stderr, "Usage: %s [ -f log_file ] socket-addr\n", progname);
+				return EX_USAGE;
+		}
+
+	if(optind >= argc) {
+		fprintf(stderr, "Usage: %s [ -f log_file ] socket-addr\n", progname);
 		return EX_USAGE;
+	}
+
+	if(access(mail_log, R_OK) < 0) {
+		perror(mail_log);
+		exit(EX_NOINPUT);
 	}
 
 	openlog("blacklist-milter", LOG_CONS|LOG_PID, LOG_MAIL);
@@ -190,7 +209,7 @@ main(int argc, char **argv)
 	}
 #endif
 
-	port = argv[1];
+	port = argv[optind];
 	if(strncasecmp(port, "unix:", 5) == 0) {
 		if(unlink(&port[5]) < 0)
 			if(errno != ENOENT)
@@ -206,17 +225,17 @@ main(int argc, char **argv)
 	}
 	/* sendmail->milter comms */
 	if(smfi_setconn(port) == MI_FAILURE) {
-		fprintf(stderr, "%s: smfi_setconn failed\n", argv[0]);
+		fprintf(stderr, "%s: smfi_setconn failed\n", progname);
 		return EX_SOFTWARE;
 	}
 
 	if(smfi_register(smfilter) == MI_FAILURE) {
-		fprintf(stderr, "%s: smfi_register failed\n", argv[0]);
+		fprintf(stderr, "%s: smfi_register failed\n", progname);
 		return EX_UNAVAILABLE;
 	}
 
 	if(smfi_opensocket(1) == MI_FAILURE) {
-		fprintf(stderr, "%s: can't open/create %s\n", argv[0], argv[1]);
+		fprintf(stderr, "%s: can't open/create %s\n", progname, port);
 		return EX_CONFIG;
 	}
 
@@ -236,7 +255,7 @@ main(int argc, char **argv)
 
 	setpgrp();
 
-	pthread_create(&tid, NULL, watchdog, NULL);
+	pthread_create(&tid, NULL, watchdog, mail_log);
 
 	return smfi_main();
 }
@@ -512,21 +531,22 @@ isWhiteList(const char *addr)
 static void *
 watchdog(void *a)
 {
+	const char *mail_log = (const char *)a;
 #ifdef	NOBODY
-	tail();
+	tail(mail_log);
 	smfi_stop();
 #else
 	for(;;) {
 		sleep(5);
 		timeout();
-		tail();
+		tail(mail_log);
 	}
 #endif
 	return NULL;
 }
 
 static void
-tail(void)
+tail(const char *log_file)
 {
 	FILE *fin;
 #if	defined(TAIL_RESTART) && (TAIL_RESTART > 0)
@@ -534,11 +554,11 @@ tail(void)
 #endif
 	char line[512];
 
-	sprintf(line, "tail -F %s", MAIL_LOG);
+	sprintf(line, "tail -F %s", log_file);
 	fin = popen(line, "r");
 
 	if(fin == NULL) {
-		perror(MAIL_LOG);
+		perror(log_file);
 		syslog(LOG_ERR, "blacklist: can't start tail");
 		return;
 	}
