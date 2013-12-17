@@ -292,7 +292,7 @@ blacklist_connect(SMFICTX *ctx, char *hostname, _SOCK_ADDR *hostaddr)
 #ifdef	DEBUG
 	printf("blacklist_milter: connection from %s\n", remoteIP);
 #endif
-	syslog(LOG_WARNING, "blacklist_milter: connection from %s", remoteIP);
+	syslog(LOG_INFO, "blacklist_milter: connection from %s", remoteIP);
 
 	if(remoteIP == NULL) {
 #ifdef	DEBUG
