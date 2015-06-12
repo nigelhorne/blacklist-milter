@@ -1,12 +1,13 @@
 blacklist-milter
 ================
 
-Blacklist-milter is a milter (i.e. a sendmail filter/plug-in) which blocks
-connections from remote sites that are spamming us by raising the firewall.
+Blacklist-milter is a milter (i.e. a sendmail filter/plug-in) which
+blocks connections from remote sites that are spamming us by raising
+the firewall.
 The remote sites are blocked for a configurable amount of time.
 
 NB: Contrary to all the advice everywhere, this milter needs to run
-as root so that it can modify your firewall.  If you don't like that, then
-don't use blacklist-milter.  Sorry.
+as root so that it can modify your firewall.  If you don't like that,
+then don't use blacklist-milter.  Sorry.
 
 For support e-mail me at njh@bandsman.co.uk.

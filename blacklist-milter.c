@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2006-2013 Nigel Horne <njh@bandsman.co.uk>
+ *  Copyright (C) 2006-2015 Nigel Horne <njh@bandsman.co.uk>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -853,8 +853,15 @@ static int
 rememberIP(SMFICTX *ctx, const char *addr)
 {
 	int i;
-	time_t now = time((time_t *)0);
+	time_t now;
 	struct ip *ip;
+
+	if(smfi_getsymval(ctx, "i") == NULL) {
+		syslog(LOG_ERR, "Add define(`confMILTER_MACROS_ENVFROM', `i')dnl to sendmail.mc");
+		return 0;
+	}
+
+	now = time((time_t *)0);
 
 	for(i = 0, ip = ips; i < NIDS; i++, ip++)
 		if((ip->ip[0] != '\0' && ((now - ip->time) < TIMEOUT)))
