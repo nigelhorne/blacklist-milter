@@ -23,7 +23,7 @@ If you're using systemd, add this as
 	After=network.target
 
 	[Service]
-	ExecStart=/usr/local/etc/blacklist local:/var/run/cmilter
+	ExecStart=/usr/local/etc/blacklist local:/var/run/blacklist
 	KillMode=process
 	Restart=on-failure
 
