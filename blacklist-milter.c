@@ -192,7 +192,7 @@ main(int argc, char **argv)
 
 	if(access(mail_log, R_OK) < 0) {
 		perror(mail_log);
-		exit(EX_NOINPUT);
+		return EX_NOINPUT;
 	}
 
 	openlog("blacklist-milter", LOG_CONS|LOG_PID, LOG_MAIL);

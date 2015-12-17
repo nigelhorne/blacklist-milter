@@ -7,22 +7,43 @@ To install, compile the program.  On Debian Linux I used
 	cc $CFLAGS blacklist-milter.c -lmilter -lpthread -L/usr/lib/libmilter
 	mv a.out /usr/local/etc/blacklist
 
-Add a line such as this to /etc/mail/sendmail.mc 
+Add a line such as these to /etc/mail/sendmail.mc 
 
 	INPUT_MAIL_FILTER(`blacklist', `S=local:/var/run/blacklist, F=T, T=S:4m;R:4m')dnl
-
-Add this to /etc/mail/sendmail.mc:
 	define(`confMILTER_MACROS_ENVFROM',`i')dnl
 
-Add the following lines to /etc/rc.local:
+Then:
+	cd /etc/mail && make
+
+If you're using systemd, add this as
+/etc/systemd/system/blacklist-milter.service:
+
+	[Unit]
+	Description=Blacklist e-mailers
+	After=network.target
+
+	[Service]
+	ExecStart=/usr/local/etc/blacklist local:/var/run/cmilter
+	KillMode=process
+	Restart=on-failure
+
+	[Install]
+	WantedBy=multi-user.target
+
+Then run
+	systemctl daemon-reload
+	systemctl enable blacklist-milter.service
+	systemctl start blacklist-milter.service
+
+If you're not using systemd, Add the following lines to /etc/rc.local:
 
 	rm -f /var/run/blacklist
 	/usr/local/etc/blacklist local:/var/run/blacklist
 
-Start the milter:
+Then run
 	/usr/local/etc/blacklist local:/var/run/blacklist
 
-Then reload sendmail:
+Finally reload sendmail:
 	/etc/init.d/sendmail reload
 
 For support e-mail me at njh@bandsman.co.uk.
