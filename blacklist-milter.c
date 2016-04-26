@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2006-2015 Nigel Horne <njh@bandsman.co.uk>
+ *  Copyright (C) 2006-2016 Nigel Horne <njh@bandsman.co.uk>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -62,6 +62,10 @@
  *	Block those in SpamCop's black-list
  * Version 0.09 8/8/13
  *	Allow the maillog's location to be given as an argument
+ * Version 0.10 26/4/16
+ *	Ping the timeout time on resend from the same ID,
+ *		this is an attempt to find out what is causing
+ *		Couldn't find sendmailID ... in the ips table from time to time
  */
 #include <stdio.h>
 #include <sysexits.h>
@@ -857,7 +861,7 @@ rememberIP(SMFICTX *ctx, const char *addr)
 	struct ip *ip;
 
 	if(smfi_getsymval(ctx, "i") == NULL) {
-		syslog(LOG_ERR, "Add define(`confMILTER_MACROS_ENVFROM', `i')dnl to sendmail.mc");
+		syslog(LOG_WARN, "Add define(`confMILTER_MACROS_ENVFROM', `i')dnl to sendmail.mc");
 		return 0;
 	}
 
@@ -870,6 +874,7 @@ rememberIP(SMFICTX *ctx, const char *addr)
 				printf("rememberIP %s->%s already known\n",
 					ip->sendmailID, addr);
 #endif
+				ip->time = now;	/* "touch" to put off time-outs */
 				return 1;
 			}
 

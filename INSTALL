@@ -7,7 +7,7 @@ To install, compile the program.  On Debian Linux I used
 	cc $CFLAGS blacklist-milter.c -lmilter -lpthread -L/usr/lib/libmilter
 	mv a.out /usr/local/etc/blacklist
 
-Add a line such as these to /etc/mail/sendmail.mc 
+Add a line such as these to /etc/mail/sendmail.mc
 
 	INPUT_MAIL_FILTER(`blacklist', `S=local:/var/run/blacklist, F=T, T=S:4m;R:4m')dnl
 	define(`confMILTER_MACROS_ENVFROM',`i')dnl
