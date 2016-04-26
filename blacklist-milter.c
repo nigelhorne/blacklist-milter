@@ -861,7 +861,7 @@ rememberIP(SMFICTX *ctx, const char *addr)
 	struct ip *ip;
 
 	if(smfi_getsymval(ctx, "i") == NULL) {
-		syslog(LOG_WARN, "Add define(`confMILTER_MACROS_ENVFROM', `i')dnl to sendmail.mc");
+		syslog(LOG_WARNING, "Add define(`confMILTER_MACROS_ENVFROM', `i')dnl to sendmail.mc");
 		return 0;
 	}
 
