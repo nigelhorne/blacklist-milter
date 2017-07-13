@@ -646,11 +646,11 @@ tail(const char *log_file)
 			 */
 			if(sendmailID) {
 #ifdef	DEBUG
-				printf("%s: Couldn't determine the IP address\n",
-					sendmailID);
+				printf("%s: Couldn't determine the IP address in '%s'\n",
+					sendmailID, line);
 #endif
-				syslog(LOG_WARNING, "%s: Couldn't determine the IP address",
-					sendmailID);
+				syslog(LOG_WARNING, "%s: Couldn't determine the IP address in '%s'",
+					sendmailID, line);
 			} else {
 				/* more serious */
 #ifdef	DEBUG
