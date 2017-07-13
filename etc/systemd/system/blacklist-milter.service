@@ -1,0 +1,11 @@
+[Unit]
+Description=Blacklist e-mailers
+After=network.target
+
+[Service]
+ExecStart=/usr/local/etc/blacklist -f /var/log/syslog/local/mail/mail.info local:/var/run/blacklist
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
