@@ -10,4 +10,6 @@ NB: Contrary to all the advice everywhere, this milter needs to run
 as root so that it can modify your firewall.  If you don't like that,
 then don't use blacklist-milter.  Sorry.
 
+You'll need to "apt-get install libmilter-dev" first.
+
 For support e-mail me at njh@bandsman.co.uk.
