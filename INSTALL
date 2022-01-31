@@ -3,9 +3,16 @@ of which are contained in blacklist-milter.c
 
 To install, compile the program.  On Debian Linux I used
 
-	apt-get install libmilter-dev
-	cc $CFLAGS blacklist-milter.c -lmilter -lpthread -L/usr/lib/libmilter
-	mv a.out /usr/local/etc/blacklist
+    apt-get install libmilter-dev
+    cc $CFLAGS blacklist-milter.c -lmilter -lpthread -L/usr/lib/libmilter
+
+On RedHat use
+    yum install sendmail-devel
+    cc $CFLAGS blacklist-milter.c -lmilter -lpthread
+
+Then
+    strip a.out
+    sudo mv a.out /usr/local/etc/blacklist
 
 Add a line such as these to /etc/mail/sendmail.mc
 
@@ -16,7 +23,8 @@ Then:
 	cd /etc/mail && make
 
 If you're using systemd, add this as
-/etc/systemd/system/blacklist-milter.service:
+/etc/systemd/system/blacklist-milter.service.
+On RedHat systems, add "-f /var/log/maillog" to the ExecStart line
 
 	[Unit]
 	Description=Blacklist e-mailers
@@ -38,9 +46,6 @@ Then run
 If you're not using systemd, Add the following lines to /etc/rc.local:
 
 	rm -f /var/run/blacklist
-	/usr/local/etc/blacklist local:/var/run/blacklist
-
-Then run
 	/usr/local/etc/blacklist local:/var/run/blacklist
 
 Finally reload sendmail:
