@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2006-2017 Nigel Horne <njh@bandsman.co.uk>
+ *  Copyright (C) 2006-2022 Nigel Horne <njh@bandsman.co.uk>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -305,7 +305,8 @@ blacklist_connect(SMFICTX *ctx, char *hostname, _SOCK_ADDR *hostaddr)
 		syslog(LOG_ERR, "blacklist_connect: remoteIP is null");
 		return SMFIS_CONTINUE;
 	}
-	if(strcmp(remoteIP, "127.0.0.1") == 0) {
+	/*if(strcmp(remoteIP, "127.0.0.1") == 0) {*/
+	if(strncmp(remoteIP, "127.0.", 6) == 0) {
 		/*syslog(LOG_DEBUG, "blacklist_connect: not scanning outgoing messages");*/
 #ifdef	DEBUG
 		puts("blacklist_connect: not scanning outgoing messages");
