@@ -519,7 +519,7 @@ isWhiteList(const char *addr)
 
 	if(strcmp(addr, "212.159.106.41") == 0)
 		return 1;
-	if(strcmp(addr, "212.159.3.225") == 0)
+	if(strcmp(addr, "100.36.69.110") == 0)
 		return 1;
 	if(strcmp(addr, "217.154.105.2") == 0)
 		return 1;
