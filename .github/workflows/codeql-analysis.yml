@@ -1,3 +1,5 @@
+---
+
 # For most projects, this workflow file will not need changing; you simply need
 # to commit it to your repository.
 #
@@ -60,8 +62,8 @@ jobs:
     #    uses a compiled language
 
     - run: |
-      apt-get install libmilter-dev
-      cc -Wall blacklist-milter.c -lmilter -lpthread -L/usr/lib/libmilter
+        apt-get install libmilter-dev
+        cc -Wall blacklist-milter.c -lmilter -lpthread -L/usr/lib/libmilter
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
