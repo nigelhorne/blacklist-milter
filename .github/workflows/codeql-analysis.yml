@@ -62,7 +62,7 @@ jobs:
     #    uses a compiled language
 
     - run: |
-        apt-get install libmilter-dev
+        sudo apt-get install libmilter-dev
         cc -Wall blacklist-milter.c -lmilter -lpthread -L/usr/lib/libmilter
 
     - name: Perform CodeQL Analysis
