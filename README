@@ -13,3 +13,5 @@ then don't use blacklist-milter.  Sorry.
 You'll need to "apt-get install libmilter-dev" first.
 
 For support e-mail me at njh@bandsman.co.uk.
+
+You should also add ConnRate and ClientRate connections within /etc/mail/access
