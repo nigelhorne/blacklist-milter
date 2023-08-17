@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2006-2022 Nigel Horne <njh@bandsman.co.uk>
+ *  Copyright (C) 2006-2023 Nigel Horne <njh@bandsman.co.uk>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -66,6 +66,8 @@
  *	Ping the timeout time on resend from the same ID,
  *		this is an attempt to find out what is causing
  *		Couldn't find sendmailID ... in the ips table from time to time
+ * Version 0.11 16/8/23
+ *	Better checking that the IP is already known
  */
 #include <stdio.h>
 #include <sysexits.h>
@@ -870,7 +872,7 @@ rememberIP(SMFICTX *ctx, const char *addr)
 
 	for(i = 0, ip = ips; i < NIDS; i++, ip++)
 		if((ip->ip[0] != '\0' && ((now - ip->time) < TIMEOUT)))
-			if(ip->ctx == ctx) {
+			if((ip->ctx == ctx) && (strcmp(ip->ip, addr) == 0)) {
 #ifdef	DEBUG
 				printf("rememberIP %s->%s already known\n",
 					ip->sendmailID, addr);
