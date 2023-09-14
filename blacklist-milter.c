@@ -605,7 +605,8 @@ tail(const char *log_file)
 						}
 					}
 				if(iaddr == NULL)
-					syslog(LOG_WARNING, "Couldn't find sendmailID '%s' in the ips table", sendmailID);
+					syslog(LOG_WARNING, "Couldn't find sendmailID '%s' in the ips table (line = \"%\")",
+							sendmailID, line);
 			} else
 				syslog(LOG_WARNING, "Couldn't parse the blocked line '%s'",
 					line);
