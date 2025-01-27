@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2006-2023 Nigel Horne <njh@bandsman.co.uk>
+ *  Copyright (C) 2006-2025 Nigel Horne <njh@bandsman.co.uk>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -888,8 +888,11 @@ rememberIP(SMFICTX *ctx, const char *addr)
 
 	for(i = 0, ip = ips; i < NIDS; i++, ip++)
 		if((ip->ip[0] == '\0' || ((now - ip->time) > TIMEOUT))) {
-			strcpy(ip->ip, addr);
-			strcpy(ip->sendmailID, smfi_getsymval(ctx, "i"));
+			strncpy(ip->ip, addr, sizeof(ip->ip) - 1);
+			ip->ip[sizeof(ip->ip) - 1] = '\0';	/* Ensure null termination */
+			strncpy(ip->sendmailID, smfi_getsymval(ctx, "i"), sizeof(ip->sendmailID) - 1);
+			ip->sendmailID[sizeof(ip->sendmailID) - 1] = '\0';	/* Ensure null termination */
+
 			ip->ctx = ctx;
 #ifdef	DEBUG
 			printf("rememberIP %s->%s\n", ip->sendmailID, addr);
