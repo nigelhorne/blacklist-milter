@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2006-2025 Nigel Horne <njh@bandsman.co.uk>
+ *  Copyright (C) 2006-2026 Nigel Horne <njh@bandsman.co.uk>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -644,7 +644,7 @@ tail(const char *log_file)
 
 		if(iaddr == NULL) {
 			/*
-			 * Usually this means that it's from a whitelisted IP,
+			 * Usually, this means that it's from a whitelisted IP,
 			 * or we've just started up and this is from a
 			 * connection which started before blacklist-milter
 			 */
