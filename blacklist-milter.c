@@ -519,7 +519,7 @@ isWhiteList(const char *addr)
 		if(htonl(net->base & net->mask) == (ip & htonl(net->mask)))
 			return 1;
 
-	if(strcmp(addr, "212.159.106.41") == 0)
+	if(strcmp(addr, "67.205.23.146") == 0)
 		return 1;
 	if(strcmp(addr, "100.36.69.110") == 0)
 		return 1;
